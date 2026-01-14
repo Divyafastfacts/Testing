@@ -6,145 +6,169 @@ interface DashboardProps {
 
 export const Dashboard: React.FC<DashboardProps> = ({ onStartRecording }) => {
   const recentPatients = [
-    { name: "Anjali Sharma", age: 34, condition: "Viral Fever", time: "2 hours ago", status: "Synced" },
-    { name: "Rahul Verma", age: 45, condition: "Hypertension", time: "5 hours ago", status: "Draft" },
-    { name: "Lakshmi Narayanan", age: 62, condition: "Type 2 Diabetes", time: "Yesterday", status: "Synced" },
-    { name: "Joseph Thomas", age: 28, condition: "Acute Bronchitis", time: "Yesterday", status: "Synced" },
+    { name: "Anjali Sharma", age: 34, condition: "Viral Fever", time: "2h ago", status: "Synced" },
+    { name: "Rahul Verma", age: 45, condition: "Hypertension", time: "5h ago", status: "Draft" },
+    { name: "Lakshmi N.", age: 62, condition: "Type 2 Diabetes", time: "Yesterday", status: "Synced" },
+  ];
+
+  const stickyNotes = [
+    { color: 'bg-yellow-50 border-yellow-100', text: "Remember to follow up with Dr. Kumar regarding the new cardio protocols.", date: "Today" },
+    { color: 'bg-blue-50 border-blue-100', text: "Department meeting scheduled for Friday at 2 PM in Hall B.", date: "Upcoming" },
+    { color: 'bg-purple-50 border-purple-100', text: "Check inventory for pediatric vaccines before next shift.", date: "Task" },
   ];
 
   return (
     <div className="flex-1 bg-gray-50 h-full overflow-y-auto font-sans">
-      <div className="max-w-6xl mx-auto p-8 md:p-12">
+      <div className="max-w-7xl mx-auto p-6 md:p-10">
         
-        {/* Top Bar */}
-        <div className="flex justify-between items-center mb-12 animate-fade-in">
+        {/* Header Section */}
+        <div className="flex justify-between items-end mb-10 animate-fade-in">
            <div>
-               <p className="text-gray-500 text-sm font-medium mb-1">Wednesday, 24 Jan</p>
-               <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome back, Dr. Smith</h1>
+               <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Good Morning, Dr. Smith</h1>
+               <p className="text-gray-500 mt-2 text-lg">Ready to transform patient care today?</p>
            </div>
            
-           <div className="flex items-center gap-4">
-              <div className="bg-white px-4 py-2 rounded-full text-sm font-semibold text-gray-600 border border-gray-200 shadow-sm flex items-center gap-2">
+           <div className="flex items-center gap-3">
+              <div className="bg-white px-4 py-2 rounded-xl text-xs font-bold text-gray-600 border border-gray-200 shadow-sm flex items-center gap-2 uppercase tracking-wide">
                   <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                  System Operational
+                  Online
               </div>
-              <div className="bg-teal-50 text-teal-700 px-4 py-2 rounded-full text-sm font-semibold border border-teal-100 flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                  20 Credits Left
+              <div className="bg-white px-4 py-2 rounded-xl text-xs font-bold text-gray-600 border border-gray-200 shadow-sm flex items-center gap-2 uppercase tracking-wide">
+                  <svg className="w-4 h-4 text-bbh-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  Shift: 08:00 - 16:00
               </div>
            </div>
         </div>
 
-        {/* Hero Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          
-          {/* Record Card */}
-          <div className="group relative bg-white rounded-3xl p-8 shadow-soft hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden cursor-pointer" onClick={onStartRecording}>
-              <div className="absolute top-0 right-0 w-64 h-64 bg-red-50 rounded-full translate-x-1/3 -translate-y-1/3 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
-              
-              <div className="relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-red-50 text-bbh-red flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            {/* Left Column: Main Actions & Stats (8 cols) */}
+            <div className="lg:col-span-8 flex flex-col gap-8">
+                
+                {/* Hero Action Card */}
+                <div 
+                    onClick={onStartRecording}
+                    className="group relative bg-white rounded-[2rem] p-8 shadow-soft border border-gray-100 overflow-hidden cursor-pointer hover:shadow-2xl hover:border-red-100 transition-all duration-300"
+                >
+                    <div className="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-red-50 to-transparent opacity-50 rounded-r-[2rem]"></div>
+                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                        <div className="w-20 h-20 rounded-2xl bg-bbh-red text-white flex items-center justify-center shadow-lg shadow-red-200 group-hover:scale-110 transition-transform duration-300">
+                             <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+                        </div>
+                        <div className="text-center md:text-left">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-bbh-red transition-colors">Start New Consultation</h2>
+                            <p className="text-gray-500 leading-relaxed max-w-md">
+                                AI-powered listening is ready. Click here to begin a secure recording session and generate SOAP notes instantly.
+                            </p>
+                        </div>
+                        <div className="ml-auto">
+                            <div className="w-12 h-12 rounded-full border-2 border-gray-100 flex items-center justify-center group-hover:bg-bbh-red group-hover:border-bbh-red group-hover:text-white transition-all text-gray-400">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-bbh-red transition-colors">Start New Consultation</h2>
-                <p className="text-gray-500 mb-8 leading-relaxed max-w-sm">
-                    Record patient interactions in real-time. Our AI will handle the documentation, generating precise SOAP notes instantly.
-                </p>
-                <div className="flex items-center text-bbh-red font-semibold group-hover:gap-2 transition-all">
-                    Begin Session
-                    <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+
+                {/* Recent Activity Table */}
+                <div className="bg-white rounded-[2rem] shadow-soft border border-gray-100 p-8 flex-1">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                            <span className="w-1.5 h-6 rounded-full bg-gray-900"></span>
+                            Recent Consultations
+                        </h3>
+                        <button className="text-sm font-semibold text-bbh-red hover:underline">View All History</button>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="text-left text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                                    <th className="pb-4 pl-2">Patient</th>
+                                    <th className="pb-4">Condition</th>
+                                    <th className="pb-4">Time</th>
+                                    <th className="pb-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-50">
+                                {recentPatients.map((p, i) => (
+                                    <tr key={i} className="hover:bg-gray-50 transition-colors group">
+                                        <td className="py-4 pl-2 font-semibold text-gray-900">{p.name} <span className="text-gray-400 font-normal text-xs ml-1">{p.age}y</span></td>
+                                        <td className="py-4 text-sm text-gray-600">{p.condition}</td>
+                                        <td className="py-4 text-xs text-gray-500">{p.time}</td>
+                                        <td className="py-4">
+                                            <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                                                p.status === 'Synced' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'
+                                            }`}>{p.status}</span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-              </div>
-          </div>
 
-          {/* Quick Stats/Tutorial Card */}
-          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 shadow-soft text-white flex flex-col justify-between border border-gray-700 relative overflow-hidden">
-               <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                  <svg width="100%" height="100%">
-                      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1"/>
-                      </pattern>
-                      <rect width="100%" height="100%" fill="url(#grid)" />
-                  </svg>
-               </div>
-               
-               <div className="relative z-10">
-                   <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-6">
-                       <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-                   </div>
-                   <h2 className="text-2xl font-bold mb-2">Weekly Summary</h2>
-                   <div className="flex gap-8 mt-6">
-                       <div>
-                           <p className="text-3xl font-bold">42</p>
-                           <p className="text-sm text-gray-400">Patients</p>
-                       </div>
-                       <div>
-                           <p className="text-3xl font-bold">12hrs</p>
-                           <p className="text-sm text-gray-400">Time Saved</p>
-                       </div>
-                   </div>
-               </div>
-               
-               <button className="mt-8 bg-white/10 hover:bg-white/20 backdrop-blur-sm py-3 px-6 rounded-xl text-sm font-semibold transition-colors w-fit border border-white/10">
-                   View Analytics
-               </button>
-          </div>
-        </div>
+            </div>
 
-        {/* Recent Activity */}
-        <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-           <div className="flex justify-between items-center mb-6">
-               <h3 className="text-xl font-bold text-gray-900">Recent Consultations</h3>
-               <button className="text-sm text-bbh-red hover:text-bbh-darkRed font-semibold flex items-center gap-1">
-                   View All 
-                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-               </button>
-           </div>
-           
-           <div className="bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
-               <div className="overflow-x-auto">
-                   <table className="w-full text-left border-collapse">
-                       <thead>
-                           <tr className="bg-gray-50/50 border-b border-gray-100 text-xs uppercase tracking-wider text-gray-500 font-semibold">
-                               <th className="p-6">Patient Name</th>
-                               <th className="p-6">Diagnosis / Note</th>
-                               <th className="p-6">Date</th>
-                               <th className="p-6">Status</th>
-                               <th className="p-6 text-right">Action</th>
-                           </tr>
-                       </thead>
-                       <tbody className="divide-y divide-gray-50">
-                           {recentPatients.map((patient, idx) => (
-                               <tr key={idx} className="hover:bg-gray-50/80 transition-colors group cursor-pointer">
-                                   <td className="p-6">
-                                       <div className="font-semibold text-gray-900">{patient.name}</div>
-                                       <div className="text-xs text-gray-400">{patient.age} Y/O</div>
-                                   </td>
-                                   <td className="p-6 text-gray-600">{patient.condition}</td>
-                                   <td className="p-6 text-gray-500 text-sm">{patient.time}</td>
-                                   <td className="p-6">
-                                       <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                                           patient.status === 'Synced' 
-                                           ? 'bg-green-50 text-green-700 border-green-100' 
-                                           : 'bg-amber-50 text-amber-700 border-amber-100'
-                                       }`}>
-                                           {patient.status}
-                                       </span>
-                                   </td>
-                                   <td className="p-6 text-right">
-                                       <button className="p-2 rounded-lg text-gray-400 hover:text-bbh-red hover:bg-red-50 transition-colors">
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                       </button>
-                                   </td>
-                               </tr>
-                           ))}
-                       </tbody>
-                   </table>
-               </div>
-           </div>
+            {/* Right Column: Bulletin & Workflow (4 cols) */}
+            <div className="lg:col-span-4 flex flex-col gap-8">
+                
+                {/* Workflow Steps */}
+                <div className="bg-gray-900 text-white rounded-[2rem] p-8 shadow-xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-32 bg-gray-800 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
+                    <h3 className="text-lg font-bold mb-6 relative z-10">Scribe Workflow</h3>
+                    <div className="space-y-6 relative z-10">
+                        <div className="flex gap-4">
+                            <div className="flex flex-col items-center">
+                                <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center font-bold text-sm shadow-lg shadow-red-900/50">1</div>
+                                <div className="w-0.5 h-full bg-gray-700 my-1"></div>
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-sm">Listen & Record</h4>
+                                <p className="text-xs text-gray-400 mt-1">Capture audio securely in any supported language.</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-4">
+                             <div className="flex flex-col items-center">
+                                <div className="w-8 h-8 rounded-full bg-gray-700 border border-gray-600 flex items-center justify-center font-bold text-sm text-gray-300">2</div>
+                                <div className="w-0.5 h-full bg-gray-700 my-1"></div>
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-sm text-gray-400">AI Processing</h4>
+                                <p className="text-xs text-gray-500 mt-1">Extracts symptoms, meds, and vitals automatically.</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-4">
+                             <div className="flex flex-col items-center">
+                                <div className="w-8 h-8 rounded-full bg-gray-700 border border-gray-600 flex items-center justify-center font-bold text-sm text-gray-300">3</div>
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-sm text-gray-400">Review & Sync</h4>
+                                <p className="text-xs text-gray-500 mt-1">Verify generated SOAP note and upload to EHR.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bulletin Board / Sticky Notes */}
+                <div className="flex flex-col gap-4">
+                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Bulletin Board</h3>
+                    {stickyNotes.map((note, idx) => (
+                        <div key={idx} className={`${note.color} border p-5 rounded-2xl shadow-sm hover:-translate-y-1 transition-transform duration-300 cursor-default`}>
+                            <div className="flex justify-between items-start mb-2">
+                                <span className="text-[10px] font-bold uppercase tracking-wide opacity-60 bg-white/50 px-2 py-0.5 rounded">{note.date}</span>
+                                <svg className="w-3 h-3 opacity-40" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>
+                            </div>
+                            <p className="text-sm font-medium text-gray-800 leading-relaxed font-serif italic">"{note.text}"</p>
+                        </div>
+                    ))}
+                    <button className="w-full py-3 rounded-xl border-2 border-dashed border-gray-200 text-gray-400 text-sm font-bold hover:border-bbh-red hover:text-bbh-red hover:bg-red-50 transition-all">
+                        + Add Reminder
+                    </button>
+                </div>
+
+            </div>
+
         </div>
-        
       </div>
     </div>
   );
-};
+}

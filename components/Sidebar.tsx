@@ -1,8 +1,10 @@
 import React from 'react';
 
+type ViewType = 'dashboard' | 'consultation' | 'notes' | 'templates' | 'support' | 'custom-note';
+
 interface SidebarProps {
-  currentView: 'dashboard' | 'consultation';
-  onNavigate: (view: 'dashboard' | 'consultation') => void;
+  currentView: ViewType;
+  onNavigate: (view: ViewType) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate }) => {
@@ -24,20 +26,43 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate }) => 
   return (
     <aside className="w-[280px] bg-white border-r border-gray-100 flex flex-col h-full shrink-0 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
       {/* Brand Header */}
-      <div className="p-8 flex items-center gap-3 cursor-pointer group" onClick={() => onNavigate('dashboard')}>
-        <div className="w-10 h-10 bg-gradient-to-br from-bbh-red to-bbh-darkRed rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-red-200 group-hover:scale-105 transition-transform duration-300">
-             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 4H14V10H20V14H14V20H10V14H4V10H10V4Z" fill="white"/>
+      <div className="p-6 flex gap-3 cursor-pointer group hover:bg-gray-50/50 transition-colors border-b border-transparent hover:border-gray-50" onClick={() => onNavigate('dashboard')}>
+        {/* Logo Icon: Stylized Heart & Cross */}
+        <div className="shrink-0 pt-1">
+             <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-sm group-hover:scale-105 transition-transform duration-300">
+                {/* Heart Base */}
+                <path d="M50 88.5 C15 60 5 38 22 20 C32 10 46 12 50 22 C54 12 68 10 78 20 C95 38 85 60 50 88.5 Z" fill="#D32F2F"/>
+                {/* White Cross */}
+                <rect x="42" y="30" width="16" height="36" fill="white" rx="1" />
+                <rect x="32" y="40" width="36" height="16" fill="white" rx="1" />
              </svg>
         </div>
-        <div>
-            <h1 className="text-xl font-bold text-gray-900 leading-none tracking-tight">BBH Scribe</h1>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-widest mt-1">Medical AI</p>
+        
+        {/* Text & Ribbon */}
+        <div className="flex flex-col">
+            <h1 className="text-[17px] font-bold text-gray-900 leading-tight tracking-tight">
+                Bangalore Baptist<br/>Hospital
+            </h1>
+            
+            {/* Ribbon Quote */}
+            <div className="relative mt-2 bg-bbh-red text-white py-1 px-2.5 shadow-sm leading-none" 
+                 style={{ 
+                     borderTopLeftRadius: '2px',
+                     borderBottomLeftRadius: '2px',
+                     clipPath: 'polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%)' 
+                 }}>
+                 <p className="text-[8.5px] font-medium tracking-wide font-serif italic">
+                    "I came that they may have life."
+                 </p>
+                 <p className="text-[8px] font-bold text-red-100 text-right pr-2 mt-0.5">
+                    John 10:10
+                 </p>
+            </div>
         </div>
       </div>
 
       {/* Primary Actions */}
-      <div className="px-6 pb-8 space-y-4">
+      <div className="px-6 pb-8 space-y-4 pt-6">
         <button 
           onClick={() => onNavigate('consultation')}
           className="w-full bg-bbh-red hover:bg-bbh-darkRed text-white py-3.5 px-4 rounded-xl shadow-lg shadow-red-100 font-semibold transition-all transform active:scale-95 flex items-center justify-center gap-3 group relative overflow-hidden"
@@ -49,7 +74,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate }) => 
           <span className="relative z-10">Start Consult</span>
         </button>
         
-        <button className="w-full bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-100 py-3.5 px-4 rounded-xl font-semibold transition-colors flex items-center justify-center gap-3">
+        <button 
+            onClick={() => onNavigate('custom-note')}
+            className="w-full bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-100 py-3.5 px-4 rounded-xl font-semibold transition-colors flex items-center justify-center gap-3"
+        >
            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
            </svg>
@@ -61,11 +89,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate }) => 
       <nav className="flex-1 overflow-y-auto px-4 space-y-1.5">
         <div className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu</div>
         {navItems.map((item) => {
-          const isActive = currentView === 'dashboard' && item.id === 'dashboard';
+          const isActive = currentView === item.id;
           return (
             <button
                 key={item.id}
-                onClick={() => item.id === 'dashboard' && onNavigate('dashboard')}
+                onClick={() => onNavigate(item.id as ViewType)}
                 className={`w-full flex items-center gap-3.5 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 text-left group
                     ${isActive 
                         ? 'bg-red-50 text-bbh-red shadow-sm' 

@@ -11,10 +11,10 @@ const soapSchema: Schema = {
     soap_details: {
       type: Type.OBJECT,
       properties: {
-        subjective: { type: Type.STRING, description: "Patient's history, symptoms, and complaints in their own words (translated)." },
-        objective: { type: Type.STRING, description: "Vitals, exam findings, and physical data mentioned." },
-        assessment: { type: Type.STRING, description: "Potential diagnosis based on symptoms." },
-        plan: { type: Type.STRING, description: "Medications, tests, and follow-up instructions." },
+        subjective: { type: Type.STRING, description: "Detailed HPI and symptoms extracted from transcript." },
+        objective: { type: Type.STRING, description: "Vitals and exam findings extracted from transcript." },
+        assessment: { type: Type.STRING, description: "ALWAYS return an empty string." },
+        plan: { type: Type.STRING, description: "ALWAYS return an empty string." },
       },
       required: ["subjective", "objective", "assessment", "plan"],
     },

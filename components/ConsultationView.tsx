@@ -34,6 +34,10 @@ export const ConsultationView: React.FC<ConsultationViewProps> = ({ patientDetai
   const [patientSummary, setPatientSummary] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
+  
+  // Verification State
+  const [isVerified, setIsVerified] = useState(false);
+  const [signature, setSignature] = useState<string | null>(null);
 
   const handleSpeechResult = useCallback((text: string) => {
     setTranscript((prev) => {
@@ -72,6 +76,9 @@ export const ConsultationView: React.FC<ConsultationViewProps> = ({ patientDetai
     
     setIsGenerating(true);
     setGenerationError(null);
+    setIsVerified(false);
+    setSignature(null); // Reset signature if regenerated
+    
     try {
       const response = await generateSoapNote(fullTranscript, language);
       setSoapData(response.soap_details);
@@ -83,12 +90,29 @@ export const ConsultationView: React.FC<ConsultationViewProps> = ({ patientDetai
     }
   };
 
-  const handleSyncToEMR = () => {
-    // Strict JSON Schema for Backend Export
+  const handleVerify = () => {
+    if (!soapData.assessment.trim() || !soapData.plan.trim()) {
+        alert("Please enter both Assessment and Plan before verifying.");
+        return;
+    }
+    
+    const doctorName = "Dr. Smith, MD";
+    const timestamp = new Date().toLocaleString();
+    const sig = `${doctorName} | Signed: ${timestamp}`;
+    
+    setSignature(sig);
+    setIsVerified(true);
+  };
+
+  const handleUploadToEHR = () => {
+    if (!isVerified) return;
+    
+    // Construct payload for EHR and JSON download
     const payload = {
         hospital: "Bangalore Baptist Hospital",
         patient_summary: patientSummary || "Summary not generated.",
-        soap_details: soapData, // Includes user edits
+        soap_details: soapData, 
+        signature: signature,
         raw_transcript_reference: transcript + (interimTranscript ? ' ' + interimTranscript : ''),
         metadata: {
             language_detected: LANGUAGES.find(l => l.code === language)?.label || language,
@@ -96,14 +120,114 @@ export const ConsultationView: React.FC<ConsultationViewProps> = ({ patientDetai
             patient_context: patientDetails || "Anonymous"
         }
     };
+    
+    console.log("Uploading to EHR:", payload);
 
+    // Generate JSON download
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `soap_note_${patientDetails?.name || 'record'}_${Date.now()}.json`);
+    downloadAnchorNode.setAttribute("download", `EHR_SYNC_${patientDetails?.name?.replace(/\s+/g, '_') || 'record'}_${Date.now()}.json`);
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+    
+    // Mock success feedback
+    alert(`Successfully uploaded record for ${patientDetails?.name || 'Patient'} to Hospital EHR System and downloaded JSON backup.`);
+  };
+
+  const handleDownloadWord = () => {
+    if (!isVerified) return;
+
+    // Create a robust HTML template for Word
+    const htmlContent = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+            <meta charset="utf-8">
+            <title>SOAP Note - ${patientDetails?.name || 'Patient'}</title>
+            <style>
+                body { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; color: #000000; }
+                .header { border-bottom: 2px solid #D32F2F; padding-bottom: 10px; margin-bottom: 20px; }
+                .title { font-size: 18pt; font-weight: bold; color: #D32F2F; margin: 0; }
+                .hospital { font-size: 10pt; color: #666; margin: 0; }
+                .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                .meta-table td { padding: 5px 0; border-bottom: 1px solid #eee; }
+                .label { font-weight: bold; color: #444; width: 150px; }
+                h2 { font-size: 14pt; color: #2c3e50; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 20px; margin-bottom: 10px; }
+                p { margin: 5px 0; }
+                .signature-block { margin-top: 50px; page-break-inside: avoid; }
+                .sign-line { border-top: 1px solid #000; width: 300px; margin-top: 40px; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <p class="title">Bangalore Baptist Hospital</p>
+                <p class="hospital">Medical Scribe Generated Record</p>
+            </div>
+
+            <table class="meta-table">
+                <tr>
+                    <td class="label">Patient Name:</td>
+                    <td>${patientDetails?.name || 'N/A'}</td>
+                    <td class="label">Date:</td>
+                    <td>${new Date().toLocaleDateString()}</td>
+                </tr>
+                <tr>
+                    <td class="label">Age/Gender:</td>
+                    <td>${patientDetails?.age || 'N/A'} / ${patientDetails?.gender || 'N/A'}</td>
+                    <td class="label">Consult Time:</td>
+                    <td>${new Date().toLocaleTimeString()}</td>
+                </tr>
+                <tr>
+                    <td class="label">Specialty:</td>
+                    <td>${patientDetails?.specialty || 'General'}</td>
+                    <td class="label">Language:</td>
+                    <td>${LANGUAGES.find(l => l.code === language)?.label || language}</td>
+                </tr>
+            </table>
+
+            <h2>Subjective</h2>
+            <p>${soapData.subjective ? soapData.subjective.replace(/\n/g, '<br/>') : '<em>No subjective data recorded.</em>'}</p>
+
+            <h2>Objective</h2>
+            <p>${soapData.objective ? soapData.objective.replace(/\n/g, '<br/>') : '<em>No objective data recorded.</em>'}</p>
+
+            <h2>Assessment</h2>
+            <p>${soapData.assessment ? soapData.assessment.replace(/\n/g, '<br/>') : '<em>No assessment recorded.</em>'}</p>
+
+            <h2>Plan</h2>
+            <p>${soapData.plan ? soapData.plan.replace(/\n/g, '<br/>') : '<em>No plan recorded.</em>'}</p>
+
+            <div class="signature-block">
+                <p><strong>Electronically Verified & Signed By:</strong></p>
+                <p style="font-family: 'Times New Roman', serif; font-size: 14pt; font-style: italic; color: #D32F2F;">
+                    ${signature?.split(' | ')[0] || 'Dr. Smith'}
+                </p>
+                <p style="font-size: 9pt; color: #666;">${signature?.split(' | ')[1] || new Date().toLocaleString()}</p>
+                <div class="sign-line"></div>
+                <p style="font-size: 8pt; color: #888;">This document is a digital record generated by the BBH Scribe system.</p>
+            </div>
+        </body>
+        </html>
+    `;
+
+    const blob = new Blob(['\ufeff', htmlContent], {
+        type: 'application/msword'
+    });
+    
+    // Create download link
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `BBH_SOAP_${patientDetails?.name?.replace(/\s+/g, '_') || 'Patient'}_${new Date().toISOString().slice(0,10)}.doc`;
+    document.body.appendChild(link);
+    link.click();
+    
+    // Cleanup
+    setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    }, 100);
   };
 
   return (
@@ -267,7 +391,7 @@ export const ConsultationView: React.FC<ConsultationViewProps> = ({ patientDetai
                 <div className="flex gap-2">
                     <button
                         onClick={handleGenerateSoap}
-                        disabled={isGenerating || (!transcript && !interimTranscript)}
+                        disabled={isGenerating || (!transcript && !interimTranscript) || isVerified}
                         className="bg-white text-bbh-red border border-gray-200 hover:border-bbh-red hover:bg-red-50 py-1.5 px-4 rounded-lg text-sm font-bold shadow-sm transition-all disabled:opacity-50 disabled:border-gray-100 disabled:text-gray-400 flex items-center gap-2"
                     >
                         {isGenerating && <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>}
@@ -281,18 +405,54 @@ export const ConsultationView: React.FC<ConsultationViewProps> = ({ patientDetai
                     soapData={soapData} 
                     setSoapData={setSoapData} 
                     isGenerating={isGenerating}
+                    isVerified={isVerified}
+                    signature={signature}
                 />
             </div>
 
-            <button
-                onClick={handleSyncToEMR}
-                className="w-full bg-gray-900 text-white hover:bg-black py-4 px-6 rounded-2xl font-bold shadow-lg transition-all flex items-center justify-center gap-3 transform active:scale-[0.98]"
-            >
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Finalize & Sync to EMR
-            </button>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <button
+                    onClick={handleVerify}
+                    disabled={isVerified || !soapData.assessment || !soapData.plan}
+                    className={`py-4 px-6 rounded-2xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 border
+                        ${isVerified 
+                            ? 'bg-green-50 text-green-700 border-green-200 opacity-100 cursor-default' 
+                            : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-200 disabled:opacity-50'
+                        }`}
+                >
+                    {isVerified ? (
+                        <>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                            Verified
+                        </>
+                    ) : (
+                        <>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            Verify & Sign Note
+                        </>
+                    )}
+                </button>
+
+                <button
+                    onClick={handleUploadToEHR}
+                    disabled={!isVerified}
+                    className="bg-blue-600 text-white hover:bg-blue-700 border border-blue-600 py-4 px-6 rounded-2xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:border-gray-200 disabled:text-gray-400"
+                >
+                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                    Upload to EHR
+                </button>
+
+                <button
+                    onClick={handleDownloadWord}
+                    disabled={!isVerified}
+                    className="bg-gray-900 text-white hover:bg-black py-4 px-6 rounded-2xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 transform active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+                >
+                        <svg className="w-5 h-5 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Download Word
+                </button>
+            </div>
         </section>
 
       </main>

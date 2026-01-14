@@ -40,19 +40,19 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({ transcript, in
       {isRecording ? (
         <div 
             ref={containerRef}
-            className="w-full h-full p-8 overflow-y-auto text-gray-700 leading-loose text-lg font-medium whitespace-pre-wrap font-sans"
+            className="w-full h-full p-8 overflow-y-auto text-gray-800 leading-loose text-lg font-medium whitespace-pre-wrap font-sans transition-all"
         >
             {transcript}
-            <span className="text-gray-400 italic">
+            <span className="text-gray-500 font-normal transition-opacity duration-75">
                 {interimTranscript && (transcript ? ' ' : '') + interimTranscript}
             </span>
             {/* Blinking Cursor Indicator */}
-            <span className="inline-block w-0.5 h-5 ml-1 bg-bbh-red animate-pulse align-middle"></span>
+            <span className="inline-block w-0.5 h-5 ml-1 bg-bbh-red animate-pulse align-middle shadow-[0_0_8px_rgba(211,47,47,0.5)]"></span>
         </div>
       ) : (
         <textarea
             ref={textareaRef}
-            className="w-full h-full p-8 resize-none focus:outline-none text-gray-700 leading-loose text-lg font-medium placeholder-transparent bg-transparent z-10 font-sans"
+            className="w-full h-full p-8 resize-none focus:outline-none text-gray-800 leading-loose text-lg font-medium placeholder-transparent bg-transparent z-10 font-sans"
             placeholder="Transcript will appear here..."
             value={transcript}
             onChange={(e) => setTranscript(e.target.value)}
