@@ -1,6 +1,6 @@
 {
-  "name": "BBH",
-  "description": "AI-powered medical scribe for Bangalore Baptist Hospital converting multilingual transcripts to SOAP notes.",
+  "name": "Scribe",
+  "description": "AI-powered medical scribe for Newgen Digitalworks converting multilingual transcripts to SOAP notes.",
   "requestFramePermissions": [
     "microphone"
   ]

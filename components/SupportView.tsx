@@ -21,7 +21,7 @@ export const SupportView: React.FC = () => {
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Employee ID</label>
-                            <input type="text" className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-bbh-red focus:ring-1 focus:ring-bbh-red" placeholder="BBH-1024" />
+                            <input type="text" className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-bbh-red focus:ring-1 focus:ring-bbh-red" placeholder="NGN-1024" />
                         </div>
                     </div>
                     <div>

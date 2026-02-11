@@ -41,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate }) => 
         {/* Text & Ribbon */}
         <div className="flex flex-col">
             <h1 className="text-[17px] font-bold text-gray-900 leading-tight tracking-tight">
-                Bangalore Baptist<br/>Hospital
+                Newgen Digitalworks<br/>Scribe
             </h1>
             
             {/* Ribbon Quote */}
@@ -51,11 +51,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate }) => 
                      borderBottomLeftRadius: '2px',
                      clipPath: 'polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%)' 
                  }}>
-                 <p className="text-[8.5px] font-medium tracking-wide font-serif italic">
-                    "I came that they may have life."
+                 <p className="text-[8.5px] font-medium tracking-wide font-sans">
+                    Transforming Care
                  </p>
                  <p className="text-[8px] font-bold text-red-100 text-right pr-2 mt-0.5">
-                    John 10:10
+                    with AI
                  </p>
             </div>
         </div>

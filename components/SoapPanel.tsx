@@ -135,7 +135,7 @@ export const SoapPanel: React.FC<SoapPanelProps> = ({ soapData, setSoapData, isG
                          <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2" className="text-bbh-red rotate-[-12deg]">
                              <circle cx="50" cy="50" r="45" />
                              <path d="M50 88.5 C15 60 5 38 22 20 C32 10 46 12 50 22 C54 12 68 10 78 20 C95 38 85 60 50 88.5 Z" stroke="currentColor" fill="none"/>
-                             <text x="50" y="65" textAnchor="middle" fontSize="10" fontWeight="bold" fill="currentColor">BBH</text>
+                             <text x="50" y="65" textAnchor="middle" fontSize="10" fontWeight="bold" fill="currentColor">NDW</text>
                              <text x="50" y="75" textAnchor="middle" fontSize="8" fill="currentColor">OFFICIAL</text>
                          </svg>
                      </div>

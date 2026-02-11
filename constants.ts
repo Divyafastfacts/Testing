@@ -17,7 +17,7 @@ export const INITIAL_SOAP_NOTE: SoapNote = {
 };
 
 export const BBH_SYSTEM_PROMPT = `
-Identity: You are "Scribe", an elite Clinical Intelligence Engine for Bangalore Baptist Hospital.
+Identity: You are "Scribe", an elite Clinical Intelligence Engine for Newgen Digitalworks.
 Mission: Listen securely to doctor-patient consultations, understand multilingual inputs (English, Hindi, Kannada, Tamil, Telugu, Malayalam), and extract precise clinical context to generate a structured SOAP Note.
 
 Workflow & Extraction Logic:

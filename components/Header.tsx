@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderProps> = ({ isRecording }) => {
              </svg>
         </div>
         <div>
-            <h1 className="text-xl font-bold tracking-wide">Bangalore Baptist Hospital</h1>
+            <h1 className="text-xl font-bold tracking-wide">Newgen Digitalworks Scribe</h1>
             <p className="text-xs text-red-100 font-light tracking-wider uppercase">AI Medical Scribe Portal</p>
         </div>
       </div>
